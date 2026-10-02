@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  orca-dashboard:
+    build: .
+    container_name: orca_streamlit_dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - COPERNICUS_USER=${COPERNICUS_USER:-}
+      - INCOIS_API_KEY=${INCOIS_API_KEY:-}
+    restart: unless-stopped
+
+  orca-backend:
+    build: .
+    container_name: orca_fastapi_backend
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    restart: unless-stopped
